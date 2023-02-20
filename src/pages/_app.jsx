@@ -1,5 +1,6 @@
 import '../styles/Navigation.css';
-// pages/_app.js
+import '../styles/Main.css';
+
 import { Roboto } from '@next/font/google'
 
 const roboto = Roboto({

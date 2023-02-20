@@ -1,10 +1,32 @@
 import Head from "next/head";
+import { FaPlus, FaQuestion, FaAngleRight, FaTimes} from "react-icons/fa";
+import { useState } from "react";
 
-import { choozes } from "../../data";
-import { FaPlus } from "react-icons/fa";
+export async function getStaticProps() {
+  try {
+    let response = await fetch("http://localhost:3000/api/choozes/get-choozes");
+    let responseFromServer = await response.json();
 
-export default function Home() {
-  console.log(choozes);
+    return {
+      props: {
+        choozes: responseFromServer,
+      },
+    };
+  } catch (e) {
+    console.log("error ", e);
+    return {
+      props: {
+        choozes: "",
+      },
+    };
+  }
+}
+
+export default function Home(props) {
+  const [choozes, setChoozes] = useState(props.choozes);
+  choozes.map(chooze => {
+    console.log(chooze);
+  });
   return (
     <>
       <Head>
@@ -19,7 +41,29 @@ export default function Home() {
           <a href="/" className="navigation-logo">
             <h1>Chooze</h1>
           </a>
-          <FaPlus className="navigation-edit"/>
+          <FaPlus className="navigation-edit" />
+        </section>
+
+        {/** MAIN */}
+        <section className="main">
+          <header>
+            <h2>Vos Choozes:</h2>
+          </header>
+          <section className="cards">
+            {choozes ? (
+              choozes?.map((chooze, index) => {
+                return (
+                  <article key={index} className="card">
+                    <FaQuestion className="card__icon"/>
+                    <h4 className="card__title">{chooze.question}</h4>
+                    <FaTimes className="card__exit" />
+                  </article>
+                );
+              })
+            ) : (
+              <h3>Vous n'avez pas encore de choozes</h3>
+            )}
+          </section>
         </section>
       </main>
     </>
