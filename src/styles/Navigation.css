@@ -1,0 +1,17 @@
+.navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid grey;
+}
+
+.navigation-logo {
+    text-decoration: none;
+    color: black;
+}
+
+.navigation-edit {
+    font-size: 1.5rem;
+}
