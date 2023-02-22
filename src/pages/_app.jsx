@@ -1,5 +1,6 @@
 import '../styles/Navigation.css';
-import '../styles/Main.css';
+import '../styles/Cards.css';
+import '../styles/Modal.css';
 
 import { Roboto } from '@next/font/google'
 

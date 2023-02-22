@@ -1,0 +1,116 @@
+.choozes-section {
+  padding: 1rem;
+}
+
+.choozes-section header {
+  padding: 2rem;
+  text-align: center;
+}
+
+.choozes-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.chooze-card {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  width: 40%;
+  height: 20rem;
+  box-shadow: 0 0.375rem 0.625rem rgba(0, 0, 0, 0.25);
+  transition: all 0.2s;
+  border-radius: 25px;
+  margin-bottom: 3rem;
+}
+
+.chooze-card:hover {
+  box-shadow: 0 0.375rem 0.625rem rgba(0, 0, 0, 0.4);
+  transform: scale(1.01);
+}
+
+.chooze-card__exit,
+.chooze-card__icon {
+  color: #000;
+  text-decoration: none;
+}
+
+.chooze-card__exit {
+  transition: all 0.2s;
+}
+
+.chooze-card__exit:hover {
+  font-size: 1.5rem;
+}
+
+.chooze-card__icon {
+  font-size: 1.875rem;
+}
+
+.chooze-card__title {
+  color: #000;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media max-width 1600px {
+  .cards {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.no-chooze {
+  width: 100%;
+  height: 100%;
+  padding: 5rem;
+  align-items: center;
+  text-align: center;
+}
+
+.no-chooze h2 {
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+.no-chooze h3 {
+  margin-top: 1rem;
+}
+
+.create-chooze-button {
+  margin-top: 2rem;
+  background: radial-gradient(#76b2fe, #b69efe);
+  width: 80%;
+  height: 3rem;
+  font-size: 1.5rem;
+  border: none;
+  align-items: center;
+  border-radius: 0.625rem;
+  box-shadow: 0 0.375rem 0.625rem rgba(0, 0, 0, 0.25);
+  transition: all 0.2s;
+}
+
+.chooze-card__img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  transition: all 0.2s;
+}
+
+.chooze-card__infos {
+  align-items: center;
+  background: radial-gradient(#76b2fe, #b69efe);
+  display: flex;
+  justify-content: space-between;
+  padding: 1.25rem;
+  width: 100%;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  height: 20%;
+}

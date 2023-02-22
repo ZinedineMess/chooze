@@ -6,7 +6,7 @@ export default async (req, res) => {
         const client = await clientPromise;
         const db = client.db("chooze_db");
         const { id } = req.query;
-        const { question, responses } = req.body;
+        const { question, responses, voters, voteLink, totalVotes, resultsLink, backgroundImageUrl } = req.body;
 
         const chooze = await db
             .collection("choozes")
@@ -17,7 +17,12 @@ export default async (req, res) => {
                 {
                     $set: {
                         "question": question,
-                        "responses": responses
+                        "responses": responses,
+                        "voters": voters, 
+                        "voteLink": voteLink, 
+                        "totalVotes": totalVotes, 
+                        "resultsLink": resultsLink,
+                        "backgroundImageUrl": backgroundImageUrl
                     }
                 }
 

@@ -1,10 +1,12 @@
 import Head from "next/head";
-import { FaPlus, FaQuestion, FaAngleRight, FaTimes} from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
+import { GET_CHOOZES_URL, ADD_CHOOZE_URL } from "../../lib/utils/apiVariables";
+import Cards from "../../components/Cards";
 
 export async function getStaticProps() {
   try {
-    let response = await fetch("http://localhost:3000/api/choozes/get-choozes");
+    let response = await fetch(GET_CHOOZES_URL);
     let responseFromServer = await response.json();
 
     return {
@@ -24,9 +26,69 @@ export async function getStaticProps() {
 
 export default function Home(props) {
   const [choozes, setChoozes] = useState(props.choozes);
-  choozes.map(chooze => {
-    console.log(chooze);
-  });
+  const [showModal, setShowModal] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState("");
+  const [propositions, setPropositions] = useState([]);
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+
+    // Vérifier que la question et les propositions sont renseignées
+    if (!question) {
+      throw new Error("La question est obligatoire.");
+    }
+
+    if (propositions.length === 0) {
+      throw new Error("Au moins une proposition est requise.");
+    }
+
+    // Créer les propositions sous forme d'objet avec leur id et votes initialisés à 0
+    const responses = {};
+    propositions.forEach((proposition, index) => {
+      const id = `response${index + 1}`;
+      responses[id] = { response: proposition, votes: { $numberInt: "0" } };
+    });
+
+    // Créer l'objet chooze à envoyer au serveur
+    const chooze = {
+      question,
+      responses,
+      voters: [],
+      voteLink: "",
+      totalVotes: { $numberInt: "0" },
+      resultsLink: "",
+      backgroundImageUrl
+    };
+
+    try {
+      // Envoyer la requête POST pour ajouter le chooze
+      const response = await fetch(ADD_CHOOZE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(chooze),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `La requête a échoué: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+
+      // Ajouter le chooze à la liste des choozes affichée
+      setChoozes([...choozes, data]);
+
+      // Réinitialiser les champs du formulaire
+      setQuestion("");
+      setPropositions([]);
+      setShowModal(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -38,32 +100,116 @@ export default function Home(props) {
       <main>
         {/** NAVIGATION */}
         <section className="navigation">
-          <a href="/" className="navigation-logo">
+          <a href="/" className="navigation-logo" aria-label="Accueil">
             <h1>Chooze</h1>
           </a>
-          <FaPlus className="navigation-edit" />
+
+          <FaPlus
+            className="navigation-edit"
+            aria-label="Créer une question"
+            onClick={() => setShowModal(true)}
+          />
         </section>
 
+        {/** MODAL */}
+        {showModal && (
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+          >
+            <div className="modal-content">
+              <button
+                aria-label="Fermer la modale"
+                className="close-button"
+                onClick={() => setShowModal(false)}
+              >
+                X
+              </button>
+
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="question">
+                  Question:
+                  <input
+                    type="text"
+                    id="question"
+                    value={question}
+                    onChange={e => setQuestion(e.target.value)}
+                    placeholder="Entres votre question ici..."
+                  />
+                </label>
+
+                <label htmlFor="background-image-url">
+                  Image de fond (URL):
+                  <input
+                    type="text"
+                    id="background-image-url"
+                    value={backgroundImageUrl}
+                    onChange={e => setBackgroundImageUrl(e.target.value)}
+                    placeholder="Copiez l'URL de la photo que vous voulez comme background..."
+                  />
+                </label>
+
+                <fieldset>
+                  <legend>Propositions:</legend>
+                  <ul>
+                    {propositions.map((proposition, index) => (
+                      <li key={index}>
+                        <label htmlFor={`proposition-${index}`}>
+                          Proposition {index + 1}:
+                          <input
+                            type="text"
+                            id={`proposition-${index}`}
+                            value={proposition}
+                            placeholder="Entres votre proposition ici..."
+                            onChange={e => {
+                              const newPropositions = [...propositions];
+                              newPropositions[index] = e.target.value;
+                              setPropositions(newPropositions);
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newPropositions = [...propositions];
+                              newPropositions.splice(index, 1);
+                              setPropositions(newPropositions);
+                            }}
+                          >
+                            Supprimer
+                          </button>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <button
+                    type="button"
+                    onClick={() => setPropositions([...propositions, ""])}
+                  >
+                    Ajouter une proposition
+                  </button>
+                </fieldset>
+
+                <button type="submit">Enregistrer</button>
+              </form>
+            </div>
+
+            <div
+              className="modal-background"
+              onClick={() => setShowModal(false)}
+            ></div>
+          </div>
+        )}
+
         {/** MAIN */}
-        <section className="main">
+        <section className="choozes-section">
           <header>
-            <h2>Vos Choozes:</h2>
+            <h2>Liste de vos Choozes:</h2>
           </header>
-          <section className="cards">
-            {choozes ? (
-              choozes?.map((chooze, index) => {
-                return (
-                  <article key={index} className="card">
-                    <FaQuestion className="card__icon"/>
-                    <h4 className="card__title">{chooze.question}</h4>
-                    <FaTimes className="card__exit" />
-                  </article>
-                );
-              })
-            ) : (
-              <h3>Vous n'avez pas encore de choozes</h3>
-            )}
-          </section>
+          <Cards choozes={choozes} />
         </section>
       </main>
     </>

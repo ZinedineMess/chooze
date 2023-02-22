@@ -4,13 +4,19 @@ export default async (req, res) => {
     try {
         const client = await clientPromise;
         const db = client.db("chooze_db");
-        const { question, responses } = req.body;
+        const { question, responses, voters, voteLink, totalVotes, resultsLink, backgroundImageUrl } = req.body;
+
 
         const chooze = await db
             .collection("choozes")
             .insertOne({
-                question,
-                responses
+                question, 
+                responses, 
+                voters, 
+                voteLink, 
+                totalVotes, 
+                resultsLink,
+                backgroundImageUrl
             });
 
         res.json(chooze);
