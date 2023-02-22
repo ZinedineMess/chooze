@@ -12,7 +12,7 @@ function Cards({ choozes }) {
               <div className="chooze-card__infos">
                 <FaQuestion className="chooze-card__icon" aria-hidden="true" />
                 <h3 className="chooze-card__title">{chooze.question}</h3>
-                <FaTimes className="chooze-card__exit" aria-hidden="true" />
+                <FaTimes className="chooze-card__exit" aria-hidden="true"/>
               </div>
             </article>
           );

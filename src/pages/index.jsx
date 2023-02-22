@@ -58,7 +58,7 @@ export default function Home(props) {
       voteLink: "",
       totalVotes: { $numberInt: "0" },
       resultsLink: "",
-      backgroundImageUrl
+      backgroundImageUrl,
     };
 
     try {
@@ -89,6 +89,13 @@ export default function Home(props) {
     }
   };
 
+  const handleCloseModal = () => {
+    setQuestion("");
+    setBackgroundImageUrl("");
+    setPropositions([]);
+    setShowModal(false);
+  };
+
   return (
     <>
       <Head>
@@ -98,12 +105,10 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {/** NAVIGATION */}
         <section className="navigation">
           <a href="/" className="navigation-logo" aria-label="Accueil">
             <h1>Chooze</h1>
           </a>
-
           <FaPlus
             className="navigation-edit"
             aria-label="Créer une question"
@@ -111,7 +116,6 @@ export default function Home(props) {
           />
         </section>
 
-        {/** MODAL */}
         {showModal && (
           <div
             className="modal"
@@ -124,7 +128,7 @@ export default function Home(props) {
               <button
                 aria-label="Fermer la modale"
                 className="close-button"
-                onClick={() => setShowModal(false)}
+                onClick={handleCloseModal}
               >
                 X
               </button>
@@ -204,7 +208,6 @@ export default function Home(props) {
           </div>
         )}
 
-        {/** MAIN */}
         <section className="choozes-section">
           <header>
             <h2>Liste de vos Choozes:</h2>
